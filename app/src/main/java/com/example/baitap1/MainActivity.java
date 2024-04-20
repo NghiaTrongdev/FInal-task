@@ -5,8 +5,10 @@ import android.annotation.SuppressLint;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -43,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseManager database;
     private int selectedItem;
     private ContentProvider content;
+    private Notifications notifications;
+
+    private NetworkNotification networkNotification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +60,19 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
         init();
+
+        notifications = new Notifications();
+
+        IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_LOW);
+        registerReceiver(notifications,filter);
+
+        networkNotification = new NetworkNotification();
+        IntentFilter networkfilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(networkNotification, networkfilter);
+
         loadData();
+
+
         adapter = new myAdapter(this,listThisinh);
         lstmain.setAdapter(adapter);
         listener();
@@ -77,14 +94,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this,AddActivity.class));
 
         });
-//        lstmain.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View v) {
-//                return false;
-//            }
-//        });
-
-
     }
 
     @Override
@@ -271,8 +280,10 @@ public class MainActivity extends AppCompatActivity {
             cursor.close();
         }
     }
-    private void batterNotification(){
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(notifications);
     }
 }
