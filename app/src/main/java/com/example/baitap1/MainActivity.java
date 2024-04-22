@@ -205,35 +205,7 @@ public class MainActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
         }
     }
-    private void searchItem(int position){
-        Thisinh thisinh = listThisinh.get(position);
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 0);
-
-        }
-
-        ContentResolver contentResolver = getContentResolver();
-        Uri uri= ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-        Cursor cursor = contentResolver.query(uri,null,null,null,null);
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                String name = ContactsContract.Contacts.DISPLAY_NAME;
-                String phone = ContactsContract.Contacts.HAS_PHONE_NUMBER;
-
-                // Kiểm tra nếu tên liên lạc trùng với tên của đối tượng Thisinh
-                if (name.equals(thisinh.getName())) {
-                    Toast.makeText(this, "Tên: " + name + ", Số điện thoại: " + phone, Toast.LENGTH_SHORT).show();
-
-                }
-//                else {
-//                    Toast.makeText(this, "Khong tim duoc", Toast.LENGTH_SHORT).show();
-//                }
-            }
-            cursor.close();
-        }
-
-    }
     private void searchItem2(int position) {
         Thisinh thisinh = listThisinh.get(position);
 
